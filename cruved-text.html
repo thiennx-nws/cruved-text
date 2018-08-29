@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <script src="fabric.js"></script>
+</head>
+
+<body>
+  <input type="text" name="" id='input-text' />
+  <button id='submit' onclick="submit()">Add Text</button>
+  <input type="range" min=-100 max=100 value="0" id='input-radius' onchange="changeRadius(this)">
+  <div id="text-cruved">
+  </div>
+  <script type="text/javascript">
+    let canvas=document.createElement('canvas')
+    let container=document.getElementById('text-cruved')
+    container.appendChild(canvas)
+    let group=null;
+    let tool=new fabric.Canvas(canvas,{
+      backgroundColor: "#ddd",
+      selection: true,
+      width: 300,
+      height: 300
+    });
+
+    let changeRadius=(e) => {
+      let value=e.value
+      if(tool._objects.length<1) {
+        return false;
+      }
+      let is_even=group.size()%2==0? true:false
+      let length=i=Math.floor(group.size()/2)
+      let index=1
+      let range_moving=value/length
+      while(index<length) {
+        if(is_even&&i==Math.floor(group.size()/2)) {
+          group.item(i).set('top',group.item(i).top-value)
+          group.item(i-1).set('top',group.item(i-1).top-value)
+          i--
+        } else if(i==Math.floor(group.size()/2)) {
+          group.item(i).set('top',group.item(i).top-value)
+          i--
+        } else {
+          group.item(i).set('top',group.item(i).top-(value+5))
+          group.item()
+          i--
+        }
+      }
+      tool.renderAll()
+    }
+
+    let submit=() => {
+      let value=document.getElementById('input-text').value
+      let padding=0;
+      let transform=10;
+      let rotate=0;
+      let arrCharacter=[];
+      value.split('').forEach((char) => {
+        padding=padding+15
+        let _options=Object.assign({
+          fontSize: 24,
+          fontFamily: 'serif',
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+          fill: '#000000',
+          textAlign: 'center',
+          vertical: false,
+          left: padding,
+        });
+        let text=new fabric.Text(char||'Text',_options);
+        arrCharacter.push(text)
+      })
+      group=new fabric.Group(arrCharacter,{
+        left: 100,
+        top: 100,
+        originX: 'center',
+        originY: 'center',
+      })
+      tool.add(group);
+      tool.renderAll();
+      tool.setActiveObject(group)
+    }
+  </script>
+</body>
+
+</html>
